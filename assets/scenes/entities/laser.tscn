@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://dl1eq6yawugwc"]
+
+[ext_resource type="Script" path="res://assets/code/entities/laser.gd" id="1_3ywro"]
+[ext_resource type="Texture2D" uid="uid://bpjurtl7tcp5h" path="res://assets/art/programmer_art/laser.png" id="1_4vmod"]
+[ext_resource type="Texture2D" uid="uid://cpxy35nov4i6a" path="res://assets/art/programmer_art/glowball.png" id="3_18g0q"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ydq0t"]
+size = Vector2(30, 12)
+
+[node name="laser" type="CharacterBody2D" groups=["parriable_projectiles"]]
+collision_layer = 2
+motion_mode = 1
+script = ExtResource("1_3ywro")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ydq0t")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+light_mask = 0
+texture = ExtResource("1_4vmod")
+
+[node name="DespawnTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 2.0
+autostart = true
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+range_item_cull_mask = 3
+texture = ExtResource("3_18g0q")
+texture_scale = 0.3
+
+[connection signal="timeout" from="DespawnTimer" to="." method="_on_despawn_timer_timeout"]

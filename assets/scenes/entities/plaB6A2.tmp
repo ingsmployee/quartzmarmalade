@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://8571ih3f8y6f"]
+
+[ext_resource type="Script" path="res://assets/code/entities/player.gd" id="1_apck8"]
+[ext_resource type="Texture2D" uid="uid://bj1tfjwvabgis" path="res://assets/art/programmer_art/tank_body.png" id="1_bvem1"]
+[ext_resource type="Texture2D" uid="uid://b8wp8fyjur3au" path="res://assets/art/programmer_art/tank_cannon.png" id="2_tomf4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3b0mw"]
+radius = 9.0
+
+[node name="Player" type="CharacterBody2D"]
+motion_mode = 1
+script = ExtResource("1_apck8")
+
+[node name="BodySprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_bvem1")
+
+[node name="Cannon" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Cannon"]
+texture = ExtResource("2_tomf4")
+
+[node name="Marker2D" type="Marker2D" parent="Cannon"]
+position = Vector2(13, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_3b0mw")

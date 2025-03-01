@@ -1,0 +1,23 @@
+[gd_resource type="TileSet" load_steps=6 format=3 uid="uid://bxrss20og7tuv"]
+
+[ext_resource type="Texture2D" uid="uid://dp2jbwsto6uix" path="res://assets/art/programmer_art/stone_tile2.png" id="1_qrjki"]
+[ext_resource type="Texture2D" uid="uid://5ujtmi7oco2k" path="res://assets/art/programmer_art/concrete_tile.png" id="2_wu1xv"]
+
+[sub_resource type="TileMapPattern" id="TileMapPattern_x68rx"]
+tile_data = PackedInt32Array(0, 2, 0, 65536, 2, 0, 131072, 2, 0, 196608, 1, 0, 262144, 2, 0, 327680, 1, 0, 393216, 2, 0, 458752, 2, 0, 524288, 2, 0, 1, 2, 0, 65537, 1, 0, 131073, 1, 0, 196609, 1, 0, 262145, 1, 0, 327681, 1, 0, 393217, 1, 0, 458753, 1, 0, 524289, 2, 0, 2, 2, 0, 65538, 1, 0, 131074, 1, 0, 196610, 1, 0, 262146, 1, 0, 327682, 1, 0, 393218, 1, 0, 458754, 1, 0, 524290, 2, 0, 3, 1, 0, 65539, 1, 0, 131075, 1, 0, 196611, 1, 0, 262147, 1, 0, 327683, 1, 0, 393219, 1, 0, 458755, 1, 0, 524291, 1, 0, 4, 2, 0, 65540, 1, 0, 131076, 1, 0, 196612, 1, 0, 262148, 1, 0, 327684, 1, 0, 393220, 1, 0, 458756, 1, 0, 524292, 2, 0, 5, 1, 0, 65541, 1, 0, 131077, 1, 0, 196613, 1, 0, 262149, 1, 0, 327685, 1, 0, 393221, 1, 0, 458757, 1, 0, 524293, 1, 0, 6, 2, 0, 65542, 1, 0, 131078, 1, 0, 196614, 1, 0, 262150, 1, 0, 327686, 1, 0, 393222, 1, 0, 458758, 1, 0, 524294, 2, 0, 7, 2, 0, 65543, 1, 0, 131079, 1, 0, 196615, 1, 0, 262151, 1, 0, 327687, 1, 0, 393223, 1, 0, 458759, 1, 0, 524295, 2, 0, 8, 2, 0, 65544, 2, 0, 131080, 2, 0, 196616, 1, 0, 262152, 2, 0, 327688, 1, 0, 393224, 2, 0, 458760, 2, 0, 524296, 2, 0)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qi4x6"]
+texture = ExtResource("1_qrjki")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ecsvo"]
+texture = ExtResource("2_wu1xv")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[resource]
+tile_size = Vector2i(32, 32)
+sources/1 = SubResource("TileSetAtlasSource_qi4x6")
+sources/2 = SubResource("TileSetAtlasSource_ecsvo")
+pattern_0 = SubResource("TileMapPattern_x68rx")

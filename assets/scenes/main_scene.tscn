@@ -1,0 +1,178 @@
+[gd_scene load_steps=11 format=3 uid="uid://cmcgt1jgu7uts"]
+
+[ext_resource type="Script" path="res://assets/code/general/borders.gd" id="1_d2681"]
+[ext_resource type="TileSet" uid="uid://bxrss20og7tuv" path="res://assets/other/dungeon_tileset.tres" id="1_l4jg7"]
+[ext_resource type="PackedScene" uid="uid://uulihi7j5rle" path="res://assets/scenes/entities/ground_tile.tscn" id="1_scuwa"]
+[ext_resource type="Script" path="res://assets/code/general/tiles_manager.gd" id="1_vsre6"]
+[ext_resource type="Script" path="res://assets/code/general/camera_2d.gd" id="2_d7q5l"]
+[ext_resource type="PackedScene" uid="uid://8571ih3f8y6f" path="res://assets/scenes/entities/player.tscn" id="2_gvnwo"]
+[ext_resource type="Texture2D" uid="uid://cbw44dhkiv7cp" path="res://assets/art/programmer_art/programmer_progress_bar_frame.png" id="6_yhtd5"]
+[ext_resource type="Texture2D" uid="uid://btu4f72rwjxea" path="res://assets/art/programmer_art/programmer_progress_bar_bg.png" id="7_5r3ks"]
+[ext_resource type="Texture2D" uid="uid://v23itq5m54l3" path="res://assets/art/programmer_art/programmer_progress_bar_progress.png" id="8_8qff4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_maalv"]
+size = Vector2(288, 20)
+
+[node name="Node2D" type="Node2D"]
+
+[node name="ReferenceRect" type="ReferenceRect" parent="."]
+custom_minimum_size = Vector2(864, 864)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -432.0
+offset_top = -432.0
+offset_right = 432.0
+offset_bottom = 432.0
+grow_horizontal = 2
+grow_vertical = 2
+border_width = 2.0
+editor_only = false
+
+[node name="Borders" type="Node2D" parent="."]
+position = Vector2(-288, -442)
+script = ExtResource("1_d2681")
+
+[node name="Top" type="StaticBody2D" parent="Borders"]
+constant_linear_velocity = Vector2(0, 100)
+
+[node name="Left" type="CollisionShape2D" parent="Borders/Top"]
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Center" type="CollisionShape2D" parent="Borders/Top"]
+position = Vector2(288, 0)
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Right" type="CollisionShape2D" parent="Borders/Top"]
+position = Vector2(576, 0)
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Right" type="StaticBody2D" parent="Borders"]
+constant_linear_velocity = Vector2(-100, 0)
+
+[node name="Left" type="CollisionShape2D" parent="Borders/Right"]
+position = Vector2(730, 154)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Center" type="CollisionShape2D" parent="Borders/Right"]
+position = Vector2(730, 442)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Right" type="CollisionShape2D" parent="Borders/Right"]
+position = Vector2(730, 730)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Left" type="StaticBody2D" parent="Borders"]
+constant_linear_velocity = Vector2(100, 0)
+
+[node name="Left" type="CollisionShape2D" parent="Borders/Left"]
+position = Vector2(-154, 730)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Center" type="CollisionShape2D" parent="Borders/Left"]
+position = Vector2(-154, 442)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Right" type="CollisionShape2D" parent="Borders/Left"]
+position = Vector2(-154, 154)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Bottom" type="StaticBody2D" parent="Borders"]
+constant_linear_velocity = Vector2(0, -100)
+
+[node name="Left" type="CollisionShape2D" parent="Borders/Bottom"]
+position = Vector2(0, 884)
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Center" type="CollisionShape2D" parent="Borders/Bottom"]
+position = Vector2(288, 884)
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Right" type="CollisionShape2D" parent="Borders/Bottom"]
+position = Vector2(576, 884)
+shape = SubResource("RectangleShape2D_maalv")
+
+[node name="Tiles" type="Node2D" parent="."]
+modulate = Color(0.393086, 0.393086, 0.393085, 1)
+z_index = 1
+script = ExtResource("1_vsre6")
+
+[node name="GroundTile" parent="Tiles" instance=ExtResource("1_scuwa")]
+position = Vector2(-432, -144)
+
+[node name="GroundTile2" parent="Tiles" instance=ExtResource("1_scuwa")]
+position = Vector2(-144, -144)
+
+[node name="GroundTile3" parent="Tiles" instance=ExtResource("1_scuwa")]
+position = Vector2(144, -144)
+
+[node name="GroundTile4" parent="Tiles" instance=ExtResource("1_scuwa")]
+position = Vector2(-432, 144)
+
+[node name="GroundTile5" parent="Tiles" instance=ExtResource("1_scuwa")]
+position = Vector2(-144, 144)
+
+[node name="GroundTile6" parent="Tiles" instance=ExtResource("1_scuwa")]
+position = Vector2(144, 144)
+
+[node name="GroundTile7" parent="Tiles" instance=ExtResource("1_scuwa")]
+position = Vector2(-432, 432)
+
+[node name="GroundTile8" parent="Tiles" instance=ExtResource("1_scuwa")]
+position = Vector2(-144, 432)
+
+[node name="GroundTile9" parent="Tiles" instance=ExtResource("1_scuwa")]
+position = Vector2(144, 432)
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+position = Vector2(-16, -16)
+tile_set = ExtResource("1_l4jg7")
+
+[node name="Projectiles" type="Node2D" parent="."]
+z_index = 2
+
+[node name="Player" parent="." instance=ExtResource("2_gvnwo")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+script = ExtResource("2_d7q5l")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 45.0
+offset_right = 49.0
+offset_bottom = 68.0
+text = "Dash Meter"
+
+[node name="DashBar" type="TextureProgressBar" parent="CanvasLayer/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 16.0
+scale = Vector2(3, 3)
+mouse_filter = 2
+max_value = 2.0
+step = 0.0
+texture_under = ExtResource("7_5r3ks")
+texture_over = ExtResource("6_yhtd5")
+texture_progress = ExtResource("8_8qff4")
+
+[connection signal="collided_with_wall" from="Player" to="Borders" method="_on_player_collided_with_wall"]

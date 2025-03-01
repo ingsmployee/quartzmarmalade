@@ -1,0 +1,70 @@
+[gd_scene load_steps=8 format=3 uid="uid://8571ih3f8y6f"]
+
+[ext_resource type="Script" path="res://assets/code/entities/player.gd" id="1_apck8"]
+[ext_resource type="Texture2D" uid="uid://bj1tfjwvabgis" path="res://assets/art/programmer_art/tank_body.png" id="1_bvem1"]
+[ext_resource type="Texture2D" uid="uid://b8wp8fyjur3au" path="res://assets/art/programmer_art/tank_cannon.png" id="2_tomf4"]
+[ext_resource type="Texture2D" uid="uid://cpxy35nov4i6a" path="res://assets/art/programmer_art/glowball.png" id="4_65186"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_o5j1u"]
+radius = 45.0
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_aletl"]
+polygon = PackedVector2Array(-1, -8, -5, -5, -8, -1, -8, 1, -5, 5, -1, 8, 1, 8, 5, 5, 8, 1, 8, -1, 5, -5, 1, -8)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3b0mw"]
+radius = 9.0
+
+[node name="Player" type="CharacterBody2D" groups=["living"]]
+z_index = 2
+motion_mode = 1
+script = ExtResource("1_apck8")
+
+[node name="ParryArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ParryArea"]
+shape = SubResource("CircleShape2D_o5j1u")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+show_behind_parent = true
+energy = 0.5
+shadow_enabled = true
+texture = ExtResource("4_65186")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+light_mask = 32
+occluder = SubResource("OccluderPolygon2D_aletl")
+occluder_light_mask = 2
+
+[node name="BodySprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(0.691357, 0.691357, 0.691357, 1)
+light_mask = 2
+texture = ExtResource("1_bvem1")
+
+[node name="Cannon" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Cannon"]
+self_modulate = Color(0.691357, 0.691357, 0.691357, 1)
+light_mask = 2
+texture = ExtResource("2_tomf4")
+
+[node name="Marker2D" type="Marker2D" parent="Cannon"]
+position = Vector2(13, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_3b0mw")
+
+[node name="PrimaryFireTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="ParryTimer" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="DashTimer" type="Timer" parent="."]
+
+[connection signal="body_entered" from="ParryArea" to="." method="_on_parry_area_body_entered"]
+[connection signal="timeout" from="PrimaryFireTimer" to="." method="_on_primary_fire_timer_timeout"]
+[connection signal="timeout" from="ParryTimer" to="." method="_on_parry_timer_timeout"]
