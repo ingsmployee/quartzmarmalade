@@ -1,9 +1,17 @@
-[gd_scene load_steps=8 format=3 uid="uid://8571ih3f8y6f"]
+[gd_scene load_steps=12 format=3 uid="uid://8571ih3f8y6f"]
 
+[ext_resource type="Shader" path="res://assets/code/shaders/simple_glow.gdshader" id="1_7evve"]
 [ext_resource type="Script" path="res://assets/code/entities/player.gd" id="1_apck8"]
 [ext_resource type="Texture2D" uid="uid://bj1tfjwvabgis" path="res://assets/art/programmer_art/tank_body.png" id="1_bvem1"]
 [ext_resource type="Texture2D" uid="uid://b8wp8fyjur3au" path="res://assets/art/programmer_art/tank_cannon.png" id="2_tomf4"]
+[ext_resource type="Resource" uid="uid://bx4i5tvygx1po" path="res://assets/other/stats/player_living_stats.tres" id="3_opex8"]
 [ext_resource type="Texture2D" uid="uid://cpxy35nov4i6a" path="res://assets/art/programmer_art/glowball.png" id="4_65186"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_adew5"]
+shader = ExtResource("1_7evve")
+shader_parameter/glow_radius = 10.0
+shader_parameter/glow_color = Vector4(1, 1, 0, 1)
+shader_parameter/glow_strength = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_o5j1u"]
 radius = 45.0
@@ -11,13 +19,21 @@ radius = 45.0
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_aletl"]
 polygon = PackedVector2Array(-1, -8, -5, -5, -8, -1, -8, 1, -5, 5, -1, 8, 1, 8, 5, 5, 8, 1, 8, -1, 5, -5, 1, -8)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_45l2n"]
+shader = ExtResource("1_7evve")
+shader_parameter/glow_radius = 6.0
+shader_parameter/glow_color = Vector4(1, 0, 0, 1)
+shader_parameter/glow_strength = 0.1
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_3b0mw"]
 radius = 9.0
 
-[node name="Player" type="CharacterBody2D" groups=["living"]]
+[node name="Player" type="CharacterBody2D" groups=["friendly", "living", "targeted"]]
 z_index = 2
+material = SubResource("ShaderMaterial_adew5")
 motion_mode = 1
 script = ExtResource("1_apck8")
+living_stats = ExtResource("3_opex8")
 
 [node name="ParryArea" type="Area2D" parent="."]
 collision_layer = 0
@@ -41,9 +57,11 @@ occluder_light_mask = 2
 [node name="BodySprite2D" type="Sprite2D" parent="."]
 self_modulate = Color(0.691357, 0.691357, 0.691357, 1)
 light_mask = 2
+material = SubResource("ShaderMaterial_45l2n")
 texture = ExtResource("1_bvem1")
 
 [node name="Cannon" type="Node2D" parent="."]
+z_index = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="Cannon"]
 self_modulate = Color(0.691357, 0.691357, 0.691357, 1)
@@ -52,6 +70,10 @@ texture = ExtResource("2_tomf4")
 
 [node name="Marker2D" type="Marker2D" parent="Cannon"]
 position = Vector2(13, 0)
+
+[node name="RayCast2D" type="RayCast2D" parent="Cannon/Marker2D"]
+position = Vector2(-13, 0)
+target_position = Vector2(1000, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

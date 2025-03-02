@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cmcgt1jgu7uts"]
+[gd_scene load_steps=9 format=3 uid="uid://cmcgt1jgu7uts"]
 
 [ext_resource type="Script" path="res://assets/code/general/borders.gd" id="1_d2681"]
 [ext_resource type="TileSet" uid="uid://bxrss20og7tuv" path="res://assets/other/dungeon_tileset.tres" id="1_l4jg7"]
@@ -6,12 +6,15 @@
 [ext_resource type="Script" path="res://assets/code/general/tiles_manager.gd" id="1_vsre6"]
 [ext_resource type="Script" path="res://assets/code/general/camera_2d.gd" id="2_d7q5l"]
 [ext_resource type="PackedScene" uid="uid://8571ih3f8y6f" path="res://assets/scenes/entities/player.tscn" id="2_gvnwo"]
-[ext_resource type="Texture2D" uid="uid://cbw44dhkiv7cp" path="res://assets/art/programmer_art/programmer_progress_bar_frame.png" id="6_yhtd5"]
-[ext_resource type="Texture2D" uid="uid://btu4f72rwjxea" path="res://assets/art/programmer_art/programmer_progress_bar_bg.png" id="7_5r3ks"]
-[ext_resource type="Texture2D" uid="uid://v23itq5m54l3" path="res://assets/art/programmer_art/programmer_progress_bar_progress.png" id="8_8qff4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_maalv"]
 size = Vector2(288, 20)
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_fdosa"]
+vertices = PackedVector2Array(422, 422, -422, 422, -422, -422, 422, -422)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-432, -432, 432, -432, 432, 432, -432, 432)])
+parsed_geometry_type = 1
 
 [node name="Node2D" type="Node2D"]
 
@@ -132,6 +135,10 @@ position = Vector2(-144, 432)
 [node name="GroundTile9" parent="Tiles" instance=ExtResource("1_scuwa")]
 position = Vector2(144, 432)
 
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="Player" parent="Entities" instance=ExtResource("2_gvnwo")]
+
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 position = Vector2(-16, -16)
 tile_set = ExtResource("1_l4jg7")
@@ -139,40 +146,22 @@ tile_set = ExtResource("1_l4jg7")
 [node name="Projectiles" type="Node2D" parent="."]
 z_index = 2
 
-[node name="Player" parent="." instance=ExtResource("2_gvnwo")]
-
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(2, 2)
 script = ExtResource("2_d7q5l")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_fdosa")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Control" type="Control" parent="CanvasLayer"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/Control"]
-layout_mode = 0
-offset_left = 9.0
-offset_top = 45.0
-offset_right = 49.0
-offset_bottom = 68.0
-text = "Dash Meter"
-
-[node name="DashBar" type="TextureProgressBar" parent="CanvasLayer/Control"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_right = 64.0
-offset_bottom = 16.0
-scale = Vector2(3, 3)
-mouse_filter = 2
-max_value = 2.0
-step = 0.0
-texture_under = ExtResource("7_5r3ks")
-texture_over = ExtResource("6_yhtd5")
-texture_progress = ExtResource("8_8qff4")
-
-[connection signal="collided_with_wall" from="Player" to="Borders" method="_on_player_collided_with_wall"]
+[connection signal="collided_with_wall" from="Entities/Player" to="Borders" method="_on_player_collided_with_wall"]

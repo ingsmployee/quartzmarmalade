@@ -1,19 +1,21 @@
 extends CharacterBody2D
 
 const LASER_SCENE: PackedScene = preload("res://assets/scenes/entities/laser.tscn")
+const BEAM_SCENE: PackedScene = preload("res://assets/scenes/entities/beam.tscn")
 
-var living_stats = LivingStats.new()
+@export var living_stats: LivingStats
+var random = RandomNumberGenerator.new()
 
 var max_velocity: float = 100
 var dash_velocity: float = 200
 var acceleration: float = 300
 
-var can_fire_primary: bool = true
+var can_fire_projectile: bool = true
 var can_parry: bool = true
 var is_parrying: bool = false
 
 var dash_charge: float
-var dash_regen_speed: float = 0.8
+var dash_regen_speed: float = 0.5
 const DASH_DEPLETE_SPEED: float = 1
 const MAX_DASH_CHARGE = 3
 var is_dashing: bool = false
@@ -25,7 +27,7 @@ signal collided_with_wall(body: StringName, shape: StringName)
 
 func _ready() -> void:
 	dash_charge = MAX_DASH_CHARGE
-	$%DashBar.max_value = MAX_DASH_CHARGE
+	#$%DashBar.max_value = MAX_DASH_CHARGE
 
 var last_velocity: Vector2 = Vector2.ZERO
 func _physics_process(delta: float) -> void:
@@ -33,23 +35,29 @@ func _physics_process(delta: float) -> void:
 	var desired_motion: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if desired_motion != Vector2.ZERO:
 		if is_dashing:
-			velocity = velocity.move_toward(desired_motion * dash_velocity, delta * acceleration * 10)
+			velocity = velocity.move_toward(desired_motion * dash_velocity, delta * acceleration * 50)
 		else:
-			velocity = velocity.move_toward(desired_motion * max_velocity, delta * acceleration)
+			var current_movement_factor: float = max(1, max_velocity / max(0.01,velocity.length()))
+			
+			velocity = velocity.move_toward(desired_motion * max_velocity, delta * current_movement_factor * acceleration * (1 + 0.3 * velocity.normalized().dot(desired_motion)))
 	else:
-		velocity = last_velocity.move_toward(Vector2.ZERO, delta * 200)
+		if is_dashing:
+			velocity = Vector2.ZERO
+		else:
+			velocity = last_velocity.move_toward(Vector2.ZERO, delta * 200)
 		#velocity = velocity.move_toward(Vector2.ZERO, delta * 0.0001)
 	
-	if Input.is_action_just_pressed("special"):
-			dash_charge -= 0.2
+	if Input.is_action_just_pressed("special") && dash_charge > 0.2:
+			dash_charge -= 0.4
 			is_dashing = true
-			velocity = 1.5 * desired_motion * dash_velocity
+			velocity = 2.5 * desired_motion * dash_velocity
 			
 			if can_parry:
 				dash_charge -= 0.1
 				begin_parry()
-	if !Input.is_action_pressed("special"):
+	if Input.is_action_just_released("special"):
 		is_dashing = false
+		velocity = velocity * 1.05
 	
 	if move_and_slide() && is_on_wall():
 		var collision = get_last_slide_collision()
@@ -72,26 +80,43 @@ func _process(delta: float) -> void:
 			is_dashing = false
 	else:
 		dash_charge = move_toward(dash_charge, MAX_DASH_CHARGE, dash_regen_speed * delta)
-	$%DashBar.value = dash_charge
+	
+	modulate = lerp(Color(1,0,0,1), Color(1,1,1,1), dash_charge / MAX_DASH_CHARGE)
+	$PointLight2D.energy = lerp(1.0, 0.5, dash_charge / MAX_DASH_CHARGE)
+	$PointLight2D.color = modulate
+	$BodySprite2D.material.set_shader_parameter("glow_strength", lerp(0.3, 0.0, dash_charge / MAX_DASH_CHARGE))
 	
 	last_desired_process_motion = desired_motion
-	if Input.is_action_pressed("primary_fire") && can_fire_primary:
-		can_fire_primary = false
-		fire_laser()
+	if is_dashing && Input.is_action_just_pressed("primary_fire"):
+		fire_beam()
+	elif Input.is_action_pressed("primary_fire") && can_fire_projectile && !is_dashing:
+		can_fire_projectile = false
+		fire_projectile()
 		$PrimaryFireTimer.start()
+	
+	
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("primary_fire") && $PrimaryFireTimer.time_left == 0:
-		fire_laser()
+	pass
 
-func fire_laser() -> void:
+func fire_projectile() -> void:
 	var laser = LASER_SCENE.instantiate()
 	laser.global_position = $Cannon/Marker2D.global_position
 	laser.rotation = $Cannon.rotation
-	get_parent().get_node("Projectiles").add_child(laser)
+	laser.rotation_degrees += random.randfn(0, 2)
+	$"../../Projectiles".add_child(laser)
 	laser.move_speed = 500
 	laser.add_collision_exception_with(self)
+	laser.set_meta("owner", self)
 	laser.change_direction()
+
+func fire_beam() -> void:
+	var beam = BEAM_SCENE.instantiate()
+	beam.global_position = $Cannon/Marker2D.global_position
+	beam.rotation = $Cannon.rotation
+	$"../../Projectiles".add_child(beam)
+	beam.set_meta("owner", self)
+	beam.fire(($Cannon/Marker2D/RayCast2D.get_collision_point() - $Cannon/Marker2D.global_position).length())
 
 func add_impulse(desired_motion: Vector2) -> void:
 	velocity = desired_motion * dash_velocity
@@ -114,12 +139,13 @@ func deactivate_parry() -> void:
 
 func execute_parry(body: Node2D) -> void:
 	dash_charge += 0.5
+	print("executing parry")
 	can_parry = false
 	body.rotation = $Cannon.rotation
 	body.change_direction()
 
 func _on_primary_fire_timer_timeout() -> void:
-	can_fire_primary = true
+	can_fire_projectile = true
 
 func _on_parry_timer_timeout() -> void:
 	if is_parrying:
@@ -129,5 +155,5 @@ func _on_parry_timer_timeout() -> void:
 	$ParryTimer.wait_time = PARRY_WINDOW
 
 func _on_parry_area_body_entered(body: Node2D) -> void:
-	if can_parry && body.is_in_group("parriable_projectiles"):
+	if can_parry && body.is_in_group("parriable_projectiles") && body.get_meta("owner", Node2D) != self:
 		execute_parry(body)

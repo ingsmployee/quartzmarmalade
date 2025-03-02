@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="LivingStats" load_steps=2 format=3 uid="uid://ch020ieh38j3g"]
+
+[ext_resource type="Script" path="res://assets/code/entities/living_stats.gd" id="1_jusyg"]
+
+[resource]
+script = ExtResource("1_jusyg")
+health = 2.0
+max_health = 2.0
+health_regen = 0.0
+invulnerable = false
+death_threshold = 0.0
