@@ -15,6 +15,10 @@ run/main_scene="res://assets/scenes/main_scene.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+UiPopup="*res://assets/code/global/ui_popup.gd"
+
 [display]
 
 window/size/viewport_width=780
@@ -28,6 +32,7 @@ parriable_projectiles="Projectiles that can be redirected. Must have change_dire
 living="Things that have damage()."
 friendly="Friendly things."
 targeted="Viable target for enemies."
+hostile="Things that are damaged by friendly things."
 
 [input]
 

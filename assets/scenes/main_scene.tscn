@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cmcgt1jgu7uts"]
+[gd_scene load_steps=13 format=3 uid="uid://cmcgt1jgu7uts"]
 
 [ext_resource type="Script" path="res://assets/code/general/borders.gd" id="1_d2681"]
 [ext_resource type="TileSet" uid="uid://bxrss20og7tuv" path="res://assets/other/dungeon_tileset.tres" id="1_l4jg7"]
@@ -6,6 +6,10 @@
 [ext_resource type="Script" path="res://assets/code/general/tiles_manager.gd" id="1_vsre6"]
 [ext_resource type="Script" path="res://assets/code/general/camera_2d.gd" id="2_d7q5l"]
 [ext_resource type="PackedScene" uid="uid://8571ih3f8y6f" path="res://assets/scenes/entities/player.tscn" id="2_gvnwo"]
+[ext_resource type="Script" path="res://assets/code/general/entities_manager.gd" id="4_acrfh"]
+[ext_resource type="AudioStream" uid="uid://b26jua1655xqo" path="res://assets/sounds/music/Quartz 3.mp3" id="7_qap1w"]
+[ext_resource type="Script" path="res://assets/code/general/cursor.gd" id="9_8446n"]
+[ext_resource type="Texture2D" uid="uid://c6fs88evygjmu" path="res://assets/art/programmer_art/white_circle2.png" id="10_wyumc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_maalv"]
 size = Vector2(288, 20)
@@ -136,6 +140,8 @@ position = Vector2(-144, 432)
 position = Vector2(144, 432)
 
 [node name="Entities" type="Node2D" parent="."]
+z_index = 2
+script = ExtResource("4_acrfh")
 
 [node name="Player" parent="Entities" instance=ExtResource("2_gvnwo")]
 
@@ -164,4 +170,35 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="Cursor" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("player")]
+top_level = true
+z_index = 1
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("9_8446n")
+player = NodePath("../../Entities/Player")
+
+[node name="Circle1" type="Control" parent="CanvasLayer/Cursor"]
+anchors_preset = 0
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Cursor/Circle1"]
+layout_mode = 0
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("10_wyumc")
+expand_mode = 1
+
+[node name="Ticks" type="Control" parent="CanvasLayer/Cursor"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_qap1w")
+
+[connection signal="beam_fired" from="Entities/Player" to="CanvasLayer/Cursor" method="_on_player_beam_fired"]
 [connection signal="collided_with_wall" from="Entities/Player" to="Borders" method="_on_player_collided_with_wall"]

@@ -12,6 +12,7 @@ shader = ExtResource("1_7evve")
 shader_parameter/glow_radius = 10.0
 shader_parameter/glow_color = Vector4(1, 1, 0, 1)
 shader_parameter/glow_strength = 1.0
+shader_parameter/is_transparent = false
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_o5j1u"]
 radius = 45.0
@@ -24,12 +25,12 @@ shader = ExtResource("1_7evve")
 shader_parameter/glow_radius = 6.0
 shader_parameter/glow_color = Vector4(1, 0, 0, 1)
 shader_parameter/glow_strength = 0.1
+shader_parameter/is_transparent = false
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3b0mw"]
 radius = 9.0
 
 [node name="Player" type="CharacterBody2D" groups=["friendly", "living", "targeted"]]
-z_index = 2
 material = SubResource("ShaderMaterial_adew5")
 motion_mode = 1
 script = ExtResource("1_apck8")

@@ -4,8 +4,7 @@
 
 [resource]
 script = ExtResource("1_jusyg")
-health = 2.0
-max_health = 2.0
-health_regen = 0.0
+max_health = 3.0
+health_regen = 0.5
 invulnerable = false
 death_threshold = 0.0

@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://dj6bcyjvwwb8t"]
+
+[ext_resource type="Texture2D" uid="uid://rh0a5bxjn18g" path="res://assets/art/programmer_art/tick_mark.png" id="1_wxgs3"]
+
+[node name="TickMark" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+scale = Vector2(2.5, 2.5)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(32, 32)
+offset_left = 16.0
+offset_top = -16.0
+offset_right = 48.0
+offset_bottom = 16.0
+rotation = 1.5708
+texture = ExtResource("1_wxgs3")
+stretch_mode = 3

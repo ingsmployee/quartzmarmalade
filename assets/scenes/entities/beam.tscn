@@ -1,19 +1,105 @@
-[gd_scene load_steps=4 format=3 uid="uid://v7sjusbo57ji"]
+[gd_scene load_steps=12 format=3 uid="uid://v7sjusbo57ji"]
 
 [ext_resource type="Script" path="res://assets/code/entities/beam.gd" id="1_htod6"]
 [ext_resource type="Texture2D" uid="uid://bctyhnxbvq1n0" path="res://assets/art/programmer_art/beam_weak.png" id="1_rsh44"]
+[ext_resource type="Shader" path="res://assets/code/shaders/simple_glow.gdshader" id="2_bxckv"]
+[ext_resource type="Texture2D" uid="uid://cjd4vb6qd6yiy" path="res://assets/art/programmer_art/beam_medium.png" id="3_casyf"]
+[ext_resource type="Texture2D" uid="uid://cpxy35nov4i6a" path="res://assets/art/programmer_art/glowball.png" id="5_033qj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nusjq"]
+shader = ExtResource("2_bxckv")
+shader_parameter/glow_radius = 10.0
+shader_parameter/glow_color = Vector4(1, 1, 0.6, 1)
+shader_parameter/glow_strength = 0.3
+shader_parameter/is_transparent = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j2g3x"]
+shader = ExtResource("2_bxckv")
+shader_parameter/glow_radius = 3.0
+shader_parameter/glow_color = Vector4(1, 1, 1, 1)
+shader_parameter/glow_strength = 0.2
+shader_parameter/is_transparent = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3bkgg"]
 
-[node name="Beam" type="Area2D"]
+[sub_resource type="Animation" id="Animation_70vpp"]
+resource_name = "fire"
+length = 4.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../CPUParticles2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../WeakTexture/TextureRect:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(0.353554, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../StrongTexture/TextureRect:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.5),
+"transitions": PackedFloat32Array(0.176777, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_hanr3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../CPUParticles2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../WeakTexture/TextureRect:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5qgd4"]
+_data = {
+"RESET": SubResource("Animation_hanr3"),
+"fire": SubResource("Animation_70vpp")
+}
+
+[node name="Beam" type="Node2D"]
 script = ExtResource("1_htod6")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_3bkgg")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-
-[node name="Control" type="Control" parent="."]
+[node name="WeakTexture" type="Control" parent="."]
 clip_contents = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 3
@@ -25,7 +111,10 @@ offset_right = 128.0
 offset_bottom = 32.0
 grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="Control"]
+[node name="TextureRect" type="TextureRect" parent="WeakTexture"]
+light_mask = 0
+material = SubResource("ShaderMaterial_nusjq")
+clip_contents = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 1
 anchors_preset = 14
@@ -37,3 +126,63 @@ grow_vertical = 2
 texture = ExtResource("1_rsh44")
 expand_mode = 2
 stretch_mode = 1
+
+[node name="StrongTexture" type="Control" parent="."]
+visible = false
+clip_contents = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 3
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -32.0
+offset_right = 128.0
+offset_bottom = 32.0
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="StrongTexture"]
+light_mask = 0
+material = SubResource("ShaderMaterial_j2g3x")
+clip_contents = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_casyf")
+expand_mode = 2
+stretch_mode = 1
+
+[node name="DespawnTimer" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_3bkgg")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+texture = ExtResource("5_033qj")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+emission_shape = 3
+emission_rect_extents = Vector2(1, 1)
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 282.83
+initial_velocity_max = 292.93
+orbit_velocity_max = 2.0
+color = Color(1, 1, 0.513726, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../DespawnTimer")
+libraries = {
+"": SubResource("AnimationLibrary_5qgd4")
+}
+
+[connection signal="timeout" from="DespawnTimer" to="." method="_on_despawn_timer_timeout"]
